@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"go-crud-api/controllers"
 	"go-crud-api/database"
 	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
 func RegisterProductRoutes(router *mux.Router) {
@@ -16,6 +18,8 @@ func RegisterProductRoutes(router *mux.Router) {
 	router.HandleFunc("/api/products/{id}", controllers.UpdateProduct).Methods("PUT")
 	router.HandleFunc("/api/products/{id}", controllers.DeleteProduct).Methods("DELETE")
 }
+
+var DB *gorm.DB
 
 func main() {
 	// Load Confiurations from config.json using Viper

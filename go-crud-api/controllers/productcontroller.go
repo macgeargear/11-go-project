@@ -17,18 +17,15 @@ func CreateProduct(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(product) // return the newly created product
 }
 
-func checkIfProdExist(productId string) bool {
+func checkIfProductExist(productId string) bool {
 	var product entities.Product
 	database.Instance.First(&product, productId)
-	if product.ID == 0 {
-		return false
-	}
-	return true
+	return product.ID != 0
 }
 
 func GetProductsById(w http.ResponseWriter, r *http.Request) {
 	productId := mux.Vars(r)["id"]
-	if checkIfProdExist(productId) == false {
+	if !(checkIfProductExist(productId)) {
 		json.NewEncoder(w).Encode("Product Not Found!")
 		return
 	}
@@ -48,7 +45,7 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 
 func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	productId := mux.Vars(r)["id"]
-	if checkIfProdExist(productId) == false {
+	if !(checkIfProductExist(productId)) {
 		json.NewEncoder(w).Encode("Product Not Found!")
 		return
 	}
@@ -58,4 +55,17 @@ func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	database.Instance.Save(&product)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(product)
+}
+
+func DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	productId := mux.Vars(r)["id"]
+	if !(checkIfProductExist(productId)) {
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode("Product Not Found!")
+		return
+	}
+	var product entities.Product
+	database.Instance.Delete(&product, productId)
+	json.NewEncoder(w).Encode("Product Deleted Successfully!")
 }

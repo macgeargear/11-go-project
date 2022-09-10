@@ -1,7 +1,7 @@
 package database
 
 import (
-	"golang-crud-api/entities"
+	"go-crud-api/entities"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -17,7 +17,7 @@ func Connect(connectionString string) {
 		log.Fatal(err)
 		panic("Cannot connect to DB")
 	}
-	log.Println("Connected to Database")
+	log.Println("Connected to Database...")
 }
 
 func Migrate() {
